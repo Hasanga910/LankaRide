@@ -1,14 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import * as busService from '../../services/busService.js';
 import StatusTag from '../../components/StatusTag.jsx';
 import ErrorMessage from '../../components/ErrorMessage.jsx';
 import Loading from '../../components/Loading.jsx';
+import Card from '../../components/ui/Card.jsx';
+import Button from '../../components/ui/Button.jsx';
+import Badge from '../../components/ui/Badge.jsx';
 
-const getSeatStatus = (freeSeats) => {
-  if (freeSeats === 0) return '🔴 Full';
-  if (freeSeats <= 5) return '🟠 Few seats left';
-  return '🟢 Seats available';
+const getSeatBadge = (freeSeats) => {
+  if (freeSeats === 0) return <Badge variant="danger">🔴 Full</Badge>;
+  if (freeSeats <= 5) return <Badge variant="warning">🟠 Few seats left</Badge>;
+  return <Badge variant="success">🟢 Seats available</Badge>;
 };
 
 const BusDetailsPage = () => {
@@ -40,12 +43,14 @@ const BusDetailsPage = () => {
     fetchBus();
   }, [fetchBus]);
 
+  const fillPct = bus?.capacity ? Math.round((bus.freeSeats / bus.capacity) * 100) : 0;
+
   return (
-    <div className="container" style={{ maxWidth: '640px' }}>
-      <div style={{ marginBottom: '1rem' }}>
-        <Link to="/search" className="btn btn-secondary btn-small">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-6">
+      <div>
+        <Button to="/search" variant="outline" size="sm">
           ← Back to Search
-        </Link>
+        </Button>
       </div>
 
       <ErrorMessage message={error} />
@@ -54,94 +59,115 @@ const BusDetailsPage = () => {
 
       {!loading && bus && (
         <>
-          <div className="card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem' }}>
+          {/* Header Card */}
+          <Card>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
-                <h2 style={{ margin: '0 0 0.3rem 0' }}>🚌 {bus.busNumber}</h2>
-                <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--navy)' }}>
-                  {bus.from} → {bus.to}
-                </div>
+                <span className="inline-flex items-center rounded-md bg-navy-50 text-navy-800 text-xs font-bold px-2.5 py-1 mb-2">
+                  🚌 {bus.busNumber}
+                </span>
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-navy-800">
+                  {bus.from} <span className="text-orange-500">→</span> {bus.to}
+                </h1>
               </div>
-              <div>
+              <div className="shrink-0">
                 <StatusTag status={bus.status} />
               </div>
             </div>
-          </div>
+          </Card>
 
-          <div className="card">
-            <h3 style={{ marginTop: 0 }}>Seat Availability</h3>
-            <div style={{ fontSize: '1.3rem', fontWeight: 700, margin: '0.5rem 0' }}>
-              {bus.freeSeats} / {bus.capacity} seats free
+          {/* Seat Availability Card */}
+          <Card>
+            <h2 className="text-lg font-bold text-navy-800 mb-2">Seat Availability</h2>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-2">
+              <div>
+                <div className="text-3xl font-extrabold text-navy-800">
+                  {bus.freeSeats} <span className="text-base font-normal text-gray-500">/ {bus.capacity} seats free</span>
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                  {getSeatBadge(bus.freeSeats)}
+                  {bus.updatedAt && (
+                    <span className="text-xs text-gray-400">
+                      Last updated: {new Date(bus.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="shrink-0">
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => fetchBus(true)}
+                  loading={refreshing}
+                  disabled={refreshing || loading}
+                >
+                  {refreshing ? 'Refreshing…' : 'Refresh Availability'}
+                </Button>
+              </div>
             </div>
-            <div style={{ fontWeight: 600, fontSize: '0.95rem', marginBottom: '0.6rem' }}>
-              {getSeatStatus(bus.freeSeats)}
+
+            <div className="mt-4 h-2 w-full rounded-full bg-gray-100 overflow-hidden">
+              <div className="h-full rounded-full bg-orange-500 transition-all duration-300" style={{ width: `${fillPct}%` }} />
             </div>
-            {bus.updatedAt && (
-              <p className="muted" style={{ margin: '0.3rem 0 0.8rem 0' }}>
-                Last updated: {new Date(bus.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
-              </p>
-            )}
-            <button
-              className="btn btn-small"
-              onClick={() => fetchBus(true)}
-              disabled={refreshing || loading}
-            >
-              {refreshing ? 'Refreshing…' : 'Refresh Availability'}
-            </button>
-          </div>
+          </Card>
 
-          <div className="card">
-            <h3 style={{ marginTop: 0 }}>Bus Details</h3>
-            <table>
-              <tbody>
-                <tr>
-                  <th>Fare</th>
-                  <td>Rs. {bus.fare}</td>
-                </tr>
-                <tr>
-                  <th>Driver</th>
-                  <td>{bus.driver?.name || 'N/A'}</td>
-                </tr>
-                <tr>
-                  <th>Driver Contact</th>
-                  <td>
-                    {bus.driver?.contact ? (
-                      <a href={`tel:${bus.driver.contact}`}>{bus.driver.contact}</a>
+          {/* Bus & Staff Details Card */}
+          <Card>
+            <h2 className="text-lg font-bold text-navy-800 mb-4">Bus Details</h2>
+            <div className="divide-y divide-gray-100 text-sm">
+              <div className="py-3 flex justify-between items-center">
+                <span className="font-semibold text-gray-500">Trip Fare</span>
+                <span className="font-bold text-navy-800">Rs. {bus.fare}</span>
+              </div>
+              <div className="py-3 flex justify-between items-center">
+                <span className="font-semibold text-gray-500">Driver</span>
+                <span className="font-medium text-navy-800">{bus.driver?.name || 'N/A'}</span>
+              </div>
+              <div className="py-3 flex justify-between items-center">
+                <span className="font-semibold text-gray-500">Driver Contact</span>
+                <span>
+                  {bus.driver?.contact ? (
+                    <a href={`tel:${bus.driver.contact}`} className="text-orange-600 hover:text-orange-700 font-semibold underline">
+                      {bus.driver.contact}
+                    </a>
+                  ) : (
+                    <span className="text-gray-400">N/A</span>
+                  )}
+                </span>
+              </div>
+              <div className="py-3 flex justify-between items-center">
+                <span className="font-semibold text-gray-500">Conductor</span>
+                <span className="font-medium text-navy-800">{bus.conductor?.name || 'Not assigned'}</span>
+              </div>
+              <div className="py-3 flex justify-between items-center">
+                <span className="font-semibold text-gray-500">Conductor Contact</span>
+                <span>
+                  {bus.conductor ? (
+                    bus.conductor.contact ? (
+                      <a href={`tel:${bus.conductor.contact}`} className="text-orange-600 hover:text-orange-700 font-semibold underline">
+                        {bus.conductor.contact}
+                      </a>
                     ) : (
-                      'N/A'
-                    )}
-                  </td>
-                </tr>
-                <tr>
-                  <th>Conductor</th>
-                  <td>{bus.conductor?.name || 'Not assigned'}</td>
-                </tr>
-                <tr>
-                  <th>Conductor Contact</th>
-                  <td>
-                    {bus.conductor ? (
-                      bus.conductor.contact ? (
-                        <a href={`tel:${bus.conductor.contact}`}>{bus.conductor.contact}</a>
-                      ) : (
-                        'N/A'
-                      )
-                    ) : (
-                      'Not assigned'
-                    )}
-                  </td>
-                </tr>
-                <tr>
-                  <th>Capacity</th>
-                  <td>{bus.capacity} seats</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                      <span className="text-gray-400">N/A</span>
+                    )
+                  ) : (
+                    <span className="text-gray-400">Not assigned</span>
+                  )}
+                </span>
+              </div>
+              <div className="py-3 flex justify-between items-center">
+                <span className="font-semibold text-gray-500">Total Capacity</span>
+                <span className="font-medium text-navy-800">{bus.capacity} seats</span>
+              </div>
+            </div>
+          </Card>
 
-          <p className="muted" style={{ fontStyle: 'italic', marginTop: '1rem', fontSize: '0.85rem' }}>
+          {/* Disclaimer */}
+          <div className="rounded-lg bg-navy-50/50 border border-navy-100 p-4 text-xs text-gray-500 italic">
             Seat availability reflects the most recent manual conductor update and is not official
             transport-authority live data.
-          </p>
+          </div>
         </>
       )}
     </div>

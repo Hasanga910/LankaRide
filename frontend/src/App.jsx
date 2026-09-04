@@ -52,6 +52,26 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/passenger/buses/:id"
+        element={
+          <ProtectedRoute roles={['passenger']}>
+            <PublicLayout>
+              <BusDetailsPage />
+            </PublicLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/passenger/profile"
+        element={
+          <ProtectedRoute roles={['passenger']}>
+            <PublicLayout>
+              <ProfilePage />
+            </PublicLayout>
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

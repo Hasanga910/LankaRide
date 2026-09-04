@@ -4,6 +4,11 @@ import * as userService from '../../services/userService.js';
 import { useAuth } from '../../hooks/useAuth.js';
 import ErrorMessage from '../../components/ErrorMessage.jsx';
 import Loading from '../../components/Loading.jsx';
+import Card from '../../components/ui/Card.jsx';
+import Input from '../../components/ui/Input.jsx';
+import Button from '../../components/ui/Button.jsx';
+import Alert from '../../components/ui/Alert.jsx';
+import Badge from '../../components/ui/Badge.jsx';
 
 const ProfilePage = () => {
   const { logout, updateUser } = useAuth();
@@ -80,18 +85,13 @@ const ProfilePage = () => {
       return;
     }
 
-    if (!form.email.trim()) {
-      setError('Please enter your email.');
-      return;
-    }
-
-    if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) {
-      setError('Please enter a valid email address.');
-      return;
-    }
-
     if (!form.contact.trim()) {
       setError('Please enter your contact number.');
+      return;
+    }
+
+    if (!/^\d{10}$/.test(form.contact.trim())) {
+      setError('Contact number must be exactly 10 digits.');
       return;
     }
 
@@ -99,7 +99,6 @@ const ProfilePage = () => {
     try {
       const updated = await userService.updateMyProfile({
         name: form.name.trim(),
-        email: form.email.trim(),
         contact: form.contact.trim(),
       });
       setProfile(updated);
@@ -135,103 +134,131 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="container" style={{ maxWidth: '560px' }}>
-      <h2>My Profile</h2>
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-6">
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-navy-800">My Profile</h1>
+        <p className="mt-1 text-sm text-gray-500">Manage your passenger account details and preferences.</p>
+      </div>
 
       <ErrorMessage message={error} />
-      {success && <div className="success">{success}</div>}
+      {success && <Alert variant="success">{success}</Alert>}
 
       {loading && <Loading />}
 
       {!loading && profile && (
         <>
-          <div className="card">
+          <Card>
             {!editing ? (
-              <>
-                <table style={{ marginBottom: '1.2rem' }}>
-                  <tbody>
-                    <tr>
-                      <th style={{ width: '35%' }}>Full Name</th>
-                      <td>{profile.name}</td>
-                    </tr>
-                    <tr>
-                      <th>Email</th>
-                      <td>{profile.email}</td>
-                    </tr>
-                    <tr>
-                      <th>Contact Number</th>
-                      <td>{profile.contact || 'Not set'}</td>
-                    </tr>
-                    <tr>
-                      <th>Account Role</th>
-                      <td style={{ textTransform: 'capitalize' }}>{profile.role}</td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div className="space-y-6">
+                <div className="flex items-center justify-between pb-4 border-b border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="h-12 w-12 rounded-full bg-navy-100 text-navy-800 font-bold text-lg flex items-center justify-center uppercase">
+                      {profile.name?.charAt(0) || 'P'}
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-bold text-navy-800">{profile.name}</h2>
+                      <p className="text-sm text-gray-500">{profile.email}</p>
+                    </div>
+                  </div>
+                  <Badge variant="neutral">Passenger</Badge>
+                </div>
 
-                <button className="btn" onClick={handleStartEdit}>
-                  Edit Profile
-                </button>
-              </>
+                <div className="divide-y divide-gray-100 text-sm">
+                  <div className="py-3 flex justify-between items-center">
+                    <span className="font-semibold text-gray-500">Full Name</span>
+                    <span className="font-medium text-navy-800">{profile.name}</span>
+                  </div>
+                  <div className="py-3 flex justify-between items-center">
+                    <span className="font-semibold text-gray-500">Email Address</span>
+                    <span className="font-medium text-navy-800">{profile.email}</span>
+                  </div>
+                  <div className="py-3 flex justify-between items-center">
+                    <span className="font-semibold text-gray-500">Contact Number</span>
+                    <span className="font-medium text-navy-800">{profile.contact || 'Not set'}</span>
+                  </div>
+                  <div className="py-3 flex justify-between items-center">
+                    <span className="font-semibold text-gray-500">Account Type</span>
+                    <span className="font-medium text-navy-800 capitalize">{profile.role}</span>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <Button variant="primary" size="sm" onClick={handleStartEdit}>
+                    Edit Profile
+                  </Button>
+                </div>
+              </div>
             ) : (
-              <form onSubmit={handleSave}>
-                <label>Full Name</label>
-                <input
+              <form onSubmit={handleSave} className="space-y-4">
+                <h2 className="text-lg font-bold text-navy-800 mb-2">Edit Account Information</h2>
+
+                <Input
+                  label="Full Name"
                   name="name"
                   value={form.name}
                   onChange={handleChange}
                   placeholder="Enter full name"
+                  required
                 />
 
-                <label>Email</label>
-                <input
-                  name="email"
-                  type="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="Enter email address"
-                />
+                <div>
+                  <Input
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    value={form.email}
+                    disabled
+                    className="bg-gray-50 text-gray-500 cursor-not-allowed"
+                  />
+                  <p className="text-xs text-gray-400 -mt-3 mb-4">
+                    Email address is permanently linked to your account and cannot be changed.
+                  </p>
+                </div>
 
-                <label>Contact Number</label>
-                <input
+                <Input
+                  label="Contact Number"
                   name="contact"
                   value={form.contact}
                   onChange={handleChange}
                   placeholder="e.g. 0712345678"
+                  required
                 />
 
-                <div style={{ display: 'flex', gap: '0.6rem', marginTop: '0.5rem' }}>
-                  <button className="btn" type="submit" disabled={saving}>
+                <div className="flex gap-3 pt-2">
+                  <Button type="submit" variant="primary" size="md" loading={saving} disabled={saving}>
                     {saving ? 'Saving…' : 'Save Changes'}
-                  </button>
-                  <button
-                    className="btn btn-secondary"
+                  </Button>
+                  <Button
                     type="button"
+                    variant="outline"
+                    size="md"
                     onClick={handleCancelEdit}
                     disabled={saving}
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </form>
             )}
-          </div>
+          </Card>
 
-          <div className="card" style={{ border: '1px solid #f8d7da', marginTop: '1.5rem' }}>
-            <h3 style={{ color: 'var(--red)', marginTop: 0 }}>Delete Account</h3>
-            <p className="muted" style={{ fontSize: '0.85rem' }}>
+          {/* Danger Zone */}
+          <Card className="border-red-100 bg-red-50/20">
+            <h2 className="text-base font-bold text-danger">Delete Account</h2>
+            <p className="text-sm text-gray-500 mt-1 mb-4">
               Permanently delete your passenger account and all associated profile information. This action
               cannot be undone.
             </p>
-            <button
-              className="btn"
-              style={{ background: 'var(--red)' }}
+            <Button
+              variant="danger"
+              size="sm"
               onClick={handleDeleteAccount}
+              loading={deleting}
               disabled={deleting}
             >
-              {deleting ? 'Deleting…' : 'Delete Account'}
-            </button>
-          </div>
+              {deleting ? 'Deleting…' : 'Delete My Account'}
+            </Button>
+          </Card>
         </>
       )}
     </div>

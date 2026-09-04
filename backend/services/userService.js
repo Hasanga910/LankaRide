@@ -44,21 +44,8 @@ export const getUserById = async (userId) => {
 };
 
 export const updateMyProfile = async (userId, data) => {
-  if (data.email) {
-    const existing = await User.findOne({
-      email: data.email.toLowerCase().trim(),
-      _id: { $ne: userId },
-    });
-    if (existing) {
-      const error = new Error('This email is already in use by another account');
-      error.statusCode = 400;
-      throw error;
-    }
-  }
-
   const allowedUpdates = {
     name: data.name?.trim(),
-    email: data.email?.toLowerCase().trim(),
     contact: data.contact?.trim(),
   };
 

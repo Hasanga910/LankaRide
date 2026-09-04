@@ -18,18 +18,35 @@ const RegisterPassengerPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (!form.name || !form.email || !form.password) {
-      setError('Name, email and password are required.');
+    if (!form.name.trim() || !form.email.trim() || !form.password || !form.contact.trim()) {
+      setError('Name, email, password and contact number are required.');
       return;
     }
-    if (form.password.length < 6) {
-      setError('Password must be at least 6 characters.');
+    if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+    if (form.password.length < 5) {
+      setError('Password must be at least 5 characters long.');
+      return;
+    }
+    if (!/[^A-Za-z0-9]/.test(form.password)) {
+      setError('Password must contain at least one special character.');
+      return;
+    }
+    if (!form.contact || !/^\d{10}$/.test(form.contact.trim())) {
+      setError('Contact number must be exactly 10 digits.');
       return;
     }
     setLoading(true);
     try {
-      await registerPassenger(form);
-      navigate('/passenger');
+      await registerPassenger({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        password: form.password,
+        contact: form.contact.trim(),
+      });
+      navigate('/search');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed.');
     } finally {
@@ -80,6 +97,7 @@ const RegisterPassengerPage = () => {
               type="password"
               value={form.password}
               onChange={handleChange}
+              placeholder="Min 5 characters with 1 special character"
               autoComplete="new-password"
             />
             <Input
@@ -87,6 +105,7 @@ const RegisterPassengerPage = () => {
               name="contact"
               value={form.contact}
               onChange={handleChange}
+              placeholder="10-digit number (e.g. 0712345678)"
               autoComplete="tel"
             />
             <Button type="submit" variant="primary" size="md" className="w-full mt-2" loading={loading}>

@@ -6,7 +6,7 @@ import Input from '../components/ui/Input.jsx';
 import Button from '../components/ui/Button.jsx';
 import Logo from '../components/ui/Logo.jsx';
 
-const roleHome = { admin: '/admin', driver: '/driver', conductor: '/conductor', passenger: '/passenger' };
+const roleHome = { admin: '/admin', driver: '/driver', conductor: '/conductor', passenger: '/search' };
 
 const LoginPage = () => {
   const { login } = useAuth();
@@ -22,6 +22,14 @@ const LoginPage = () => {
     setError('');
     if (!form.email || !form.password) {
       setError('Please enter both email and password.');
+      return;
+    }
+    if (form.password.length < 5) {
+      setError('Password must be at least 5 characters long.');
+      return;
+    }
+    if (!/[^A-Za-z0-9]/.test(form.password)) {
+      setError('Password must contain at least one special character.');
       return;
     }
     setLoading(true);

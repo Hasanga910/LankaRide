@@ -55,19 +55,20 @@ export const updateMyProfile = async (req, res) => {
     if (!name || !name.trim()) {
       return res.status(400).json({ message: 'Name is required' });
     }
-    if (!email || !email.trim()) {
-      return res.status(400).json({ message: 'Email is required' });
-    }
-    if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
-      return res.status(400).json({ message: 'Please enter a valid email address' });
-    }
     if (!contact || !contact.trim()) {
       return res.status(400).json({ message: 'Contact number is required' });
+    }
+    if (!/^\d{10}$/.test(contact.trim())) {
+      return res.status(400).json({ message: 'Contact number must be exactly 10 digits' });
+    }
+
+    // Email cannot be changed after account creation
+    if (email && req.user?.email && email.toLowerCase().trim() !== req.user.email.toLowerCase().trim()) {
+      return res.status(400).json({ message: 'Email address cannot be changed after account creation' });
     }
 
     const updatedUser = await userService.updateMyProfile(req.user._id || req.user.id, {
       name,
-      email,
       contact,
     });
 
