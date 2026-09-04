@@ -38,8 +38,20 @@ const AdminDashboard = () => {
       setError('Name, email and password are required.');
       return;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      setError('Please enter a valid email address.');
+      return;
+    }
     if (form.password.length < 6) {
       setError('Password must be at least 6 characters.');
+      return;
+    }
+    if (form.contact && !/^(?:\+94|0)?7[01245678]\d{7}$/.test(form.contact.trim())) {
+      setError('Contact number must be a valid 10-digit Sri Lankan phone number (e.g. 0771234567).');
+      return;
+    }
+    if (form.nic && !/^(?:\d{9}[vVxX]|\d{12})$/.test(form.nic.trim())) {
+      setError('NIC must be a valid Sri Lankan NIC (e.g. 901234567V or 199012345678).');
       return;
     }
     setSubmitting(true);

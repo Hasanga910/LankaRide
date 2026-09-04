@@ -19,8 +19,16 @@ const RegisterPassengerPage = () => {
       setError('Name, email and password are required.');
       return;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      setError('Please enter a valid email address.');
+      return;
+    }
     if (form.password.length < 6) {
       setError('Password must be at least 6 characters.');
+      return;
+    }
+    if (form.contact && !/^(?:\+94|0)?7[01245678]\d{7}$/.test(form.contact.trim())) {
+      setError('Contact number must be a valid 10-digit Sri Lankan phone number (e.g. 0771234567).');
       return;
     }
     setLoading(true);

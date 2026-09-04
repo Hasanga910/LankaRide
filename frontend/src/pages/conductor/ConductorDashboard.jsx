@@ -92,6 +92,14 @@ const ConductorDashboard = () => {
       setError('From, to and capacity are required.');
       return;
     }
+    if (detailsForm.from.trim().toLowerCase() === detailsForm.to.trim().toLowerCase()) {
+      setError('Departure (From) and Destination (To) cannot be the same city.');
+      return;
+    }
+    if (detailsForm.fare !== '' && Number(detailsForm.fare) < 0) {
+      setError('Fare cannot be negative.');
+      return;
+    }
     setSavingDetails(true);
     try {
       await busService.updateBusDetails(selectedId, {

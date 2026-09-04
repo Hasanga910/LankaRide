@@ -40,8 +40,16 @@ const DriverDashboard = () => {
       setError('Bus number, route, from, to and capacity are required.');
       return;
     }
+    if (form.from.trim().toLowerCase() === form.to.trim().toLowerCase()) {
+      setError('Departure (From) and Destination (To) cannot be the same city.');
+      return;
+    }
     if (Number(form.capacity) <= 0) {
       setError('Capacity must be greater than 0.');
+      return;
+    }
+    if (form.fare !== '' && Number(form.fare) < 0) {
+      setError('Fare cannot be negative.');
       return;
     }
     setSubmitting(true);

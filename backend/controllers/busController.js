@@ -1,4 +1,5 @@
 import * as busService from '../services/busService.js';
+import { isValidBusNumber } from '../utils/validators.js';
 
 export const createBus = async (req, res) => {
   try {
@@ -6,8 +7,17 @@ export const createBus = async (req, res) => {
     if (!busNumber || !route || !from || !to || !capacity) {
       return res.status(400).json({ message: 'Bus number, route, from, to and capacity are required' });
     }
+    if (!isValidBusNumber(busNumber)) {
+      return res.status(400).json({ message: 'Please enter a valid bus number (e.g. NB-4521 or 62-1020)' });
+    }
+    if (from.trim().toLowerCase() === to.trim().toLowerCase()) {
+      return res.status(400).json({ message: 'Departure (From) and Destination (To) cannot be the same city' });
+    }
     if (Number(capacity) <= 0) {
       return res.status(400).json({ message: 'Capacity must be greater than 0' });
+    }
+    if (fare !== undefined && Number(fare) < 0) {
+      return res.status(400).json({ message: 'Fare cannot be negative' });
     }
     const bus = await busService.createBus(req.user._id, { busNumber, route, from, to, capacity, fare });
     res.status(201).json(bus);
@@ -38,6 +48,13 @@ export const updateStatus = async (req, res) => {
 
 export const updateBusDetails = async (req, res) => {
   try {
+    const { from, to, fare } = req.body;
+    if (from && to && from.trim().toLowerCase() === to.trim().toLowerCase()) {
+      return res.status(400).json({ message: 'Departure (From) and Destination (To) cannot be the same city' });
+    }
+    if (fare !== undefined && Number(fare) < 0) {
+      return res.status(400).json({ message: 'Fare cannot be negative' });
+    }
     const bus = await busService.updateBusDetails(req.params.id, req.user._id, req.body);
     res.status(200).json(bus);
   } catch (err) {
