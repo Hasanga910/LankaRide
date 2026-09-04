@@ -9,7 +9,8 @@ import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 import DriverDashboard from './pages/driver/DriverDashboard.jsx';
 import ConductorDashboard from './pages/conductor/ConductorDashboard.jsx';
 import SearchBusesPage from './pages/passenger/SearchBusesPage.jsx';
-import TrackBusPage from './pages/passenger/TrackBusPage.jsx';
+import BusDetailsPage from './pages/passenger/BusDetailsPage.jsx';
+import ProfilePage from './pages/passenger/ProfilePage.jsx';
 import ProtectedRoute from './routes/ProtectedRoute.jsx';
 
 function App() {
@@ -50,6 +51,26 @@ function App() {
             <AdminLayout title="Conductor Dashboard">
               <ConductorDashboard />
             </AdminLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/passenger/buses/:id"
+        element={
+          <ProtectedRoute roles={['passenger']}>
+            <PublicLayout>
+              <BusDetailsPage />
+            </PublicLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/passenger/profile"
+        element={
+          <ProtectedRoute roles={['passenger']}>
+            <PublicLayout>
+              <ProfilePage />
+            </PublicLayout>
           </ProtectedRoute>
         }
       />
