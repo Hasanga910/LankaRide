@@ -76,6 +76,12 @@ const seed = async () => {
       freeSeats: 12,
       fare: 80,
       status: 'En Route',
+      trackingActive: true,
+      currentLocation: {
+        latitude: 6.9044,
+        longitude: 79.9542,
+        updatedAt: new Date(),
+      },
       driver: driver1._id,
       conductor: conductor1._id,
     },
@@ -88,6 +94,12 @@ const seed = async () => {
       freeSeats: 45,
       fare: 70,
       status: 'Not Started',
+      trackingActive: false,
+      currentLocation: {
+        latitude: 6.9328,
+        longitude: 79.9839,
+        updatedAt: null,
+      },
       driver: driver2._id,
       conductor: conductor2._id,
     },
@@ -100,10 +112,17 @@ const seed = async () => {
       freeSeats: 3,
       fare: 320,
       status: 'En Route',
+      trackingActive: true,
+      currentLocation: {
+        latitude: 7.2906,
+        longitude: 80.6337,
+        updatedAt: new Date(),
+      },
       driver: driver1._id,
       conductor: null,
     },
   ]);
+
 
   console.log('\nSeed data created. Sample logins:');
   console.log('  Admin:      admin@busbuddy.lk      / Admin@123');

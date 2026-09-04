@@ -74,3 +74,35 @@ export const getBusById = async (req, res) => {
     res.status(err.statusCode || 500).json({ message: err.message });
   }
 };
+
+export const updateLocation = async (req, res) => {
+  try {
+    const { latitude, longitude } = req.body;
+    if (latitude === undefined || longitude === undefined) {
+      return res.status(400).json({ message: 'Latitude and longitude are required' });
+    }
+    const result = await busService.updateLocation(req.params.id, req.user._id, { latitude, longitude });
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(err.statusCode || 500).json({ message: err.message });
+  }
+};
+
+export const stopTracking = async (req, res) => {
+  try {
+    const result = await busService.stopTracking(req.params.id, req.user._id);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(err.statusCode || 500).json({ message: err.message });
+  }
+};
+
+export const getBusLocation = async (req, res) => {
+  try {
+    const result = await busService.getBusLocation(req.params.id);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(err.statusCode || 500).json({ message: err.message });
+  }
+};
+

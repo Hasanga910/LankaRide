@@ -8,6 +8,7 @@ import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 import DriverDashboard from './pages/driver/DriverDashboard.jsx';
 import ConductorDashboard from './pages/conductor/ConductorDashboard.jsx';
 import SearchBusesPage from './pages/passenger/SearchBusesPage.jsx';
+import TrackBusPage from './pages/passenger/TrackBusPage.jsx';
 import ProtectedRoute from './routes/ProtectedRoute.jsx';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPassengerPage />} />
         <Route path="/search" element={<SearchBusesPage />} />
+        <Route path="/track/:id" element={<TrackBusPage />} />
 
         <Route
           path="/admin"
