@@ -141,3 +141,94 @@ export const getBusById = async (id) => {
   }
   return bus;
 };
+
+// --- Live Location Tracking -------------------------------------------
+
+export const updateLocation = async (busId, conductorId, { latitude, longitude }) => {
+  const lat = Number(latitude);
+  const lng = Number(longitude);
+
+  if (Number.isNaN(lat) || lat < -90 || lat > 90) {
+    const error = new Error('Valid latitude between -90 and 90 is required');
+    error.statusCode = 400;
+    throw error;
+  }
+  if (Number.isNaN(lng) || lng < -180 || lng > 180) {
+    const error = new Error('Valid longitude between -180 and 180 is required');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const bus = await Bus.findById(busId);
+  if (!bus) {
+    const error = new Error('Bus not found');
+    error.statusCode = 404;
+    throw error;
+  }
+
+  bus.conductor = conductorId;
+  bus.trackingActive = true;
+  bus.currentLocation = {
+    latitude: lat,
+    longitude: lng,
+    updatedAt: new Date(),
+  };
+
+  await bus.save();
+  return {
+    _id: bus._id,
+    busNumber: bus.busNumber,
+    route: `${bus.from} → ${bus.to}`,
+    from: bus.from,
+    to: bus.to,
+    trackingActive: bus.trackingActive,
+    currentLocation: bus.currentLocation,
+  };
+};
+
+export const stopTracking = async (busId, conductorId) => {
+  const bus = await Bus.findById(busId);
+  if (!bus) {
+    const error = new Error('Bus not found');
+    error.statusCode = 404;
+    throw error;
+  }
+
+  bus.conductor = conductorId;
+  bus.trackingActive = false;
+  if (bus.currentLocation) {
+    bus.currentLocation.updatedAt = new Date();
+  }
+
+  await bus.save();
+  return {
+    _id: bus._id,
+    busNumber: bus.busNumber,
+    route: `${bus.from} → ${bus.to}`,
+    from: bus.from,
+    to: bus.to,
+    trackingActive: bus.trackingActive,
+    currentLocation: bus.currentLocation,
+  };
+};
+
+export const getBusLocation = async (busId) => {
+  const bus = await Bus.findById(busId).select('busNumber from to trackingActive currentLocation status');
+  if (!bus) {
+    const error = new Error('Bus not found');
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return {
+    _id: bus._id,
+    busNumber: bus.busNumber,
+    route: `${bus.from} → ${bus.to}`,
+    from: bus.from,
+    to: bus.to,
+    status: bus.status,
+    trackingActive: Boolean(bus.trackingActive),
+    currentLocation: bus.currentLocation || null,
+  };
+};
+
