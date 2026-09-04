@@ -13,8 +13,8 @@ import {
 
 const router = express.Router();
 
-// Public — Passenger search (also viewable by anyone, no login required)
-router.get('/search', searchBuses);
+// Passenger & Conductor search (requires JWT auth)
+router.get('/search', protect, authorize('passenger', 'conductor'), searchBuses);
 
 // Driver
 router.get('/mine', protect, authorize('driver'), getMyBuses);
@@ -25,7 +25,7 @@ router.put('/:id/status', protect, authorize('driver'), updateStatus);
 router.put('/:id/details', protect, authorize('conductor'), updateBusDetails);
 router.put('/:id/seats', protect, authorize('conductor'), updateSeats);
 
-// Public — bus details (keep last: avoids clashing with /search or /mine)
-router.get('/:id', getBusById);
+// Passenger — bus details (keep last: avoids clashing with /search or /mine)
+router.get('/:id', protect, authorize('passenger'), getBusById);
 
 export default router;

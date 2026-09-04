@@ -29,3 +29,9 @@ export const updateSeats = async (id, action, value) => {
   const { data } = await api.put(`/buses/${id}/seats`, { action, value });
   return data;
 };
+
+export const getBusById = async (id) => {
+  const { data } = await api.get(`/buses/${id}`);
+  return data;
+};
+

@@ -38,3 +38,24 @@ export const registerStaff = async ({ name, email, password, role, nic, contact,
 
 export const getStaffList = async () =>
   User.find({ role: { $in: ['driver', 'conductor'] } }).select('-password').sort({ createdAt: -1 });
+
+export const getUserById = async (userId) => {
+  return User.findById(userId).select('-password');
+};
+
+export const updateMyProfile = async (userId, data) => {
+  const allowedUpdates = {
+    name: data.name?.trim(),
+    contact: data.contact?.trim(),
+  };
+
+  return User.findByIdAndUpdate(userId, allowedUpdates, {
+    new: true,
+    runValidators: true,
+  }).select('-password');
+};
+
+export const deleteUser = async (userId) => {
+  return User.findByIdAndDelete(userId);
+};
+
