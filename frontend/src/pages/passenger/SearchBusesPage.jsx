@@ -3,6 +3,9 @@ import * as busService from '../../services/busService.js';
 import BusCard from '../../components/BusCard.jsx';
 import ErrorMessage from '../../components/ErrorMessage.jsx';
 import Loading from '../../components/Loading.jsx';
+import Card from '../../components/ui/Card.jsx';
+import Input from '../../components/ui/Input.jsx';
+import Button from '../../components/ui/Button.jsx';
 
 const SearchBusesPage = () => {
   const [form, setForm] = useState({ from: '', to: '' });
@@ -43,72 +46,35 @@ const SearchBusesPage = () => {
   };
 
   return (
-    <div className="container">
-      <h2>Find Your Bus</h2>
-      <p className="muted" style={{ marginTop: '-0.3rem', marginBottom: '1.2rem' }}>
-        Enter a starting point or destination, or leave both empty to view all buses.
-      </p>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-navy-800">Search Buses</h1>
+      <p className="mt-2 text-gray-500 mb-6">Find live seat availability for your route.</p>
 
-      <form onSubmit={handleSearch} className="card grid-2">
-        <div>
-          <label>From</label>
-          <input
-            name="from"
-            value={form.from}
-            onChange={handleChange}
-            placeholder="Starting point (optional)"
-          />
-        </div>
-        <div>
-          <label>To</label>
-          <input
-            name="to"
-            value={form.to}
-            onChange={handleChange}
-            placeholder="Destination (optional)"
-          />
-        </div>
-        <div style={{ gridColumn: '1 / -1', display: 'flex', gap: '0.6rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <button className="btn" disabled={loading}>
-            {loading ? 'Searching…' : 'Search Buses'}
-          </button>
-          {(form.from || form.to) && (
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={handleClear}
-              disabled={loading}
-            >
-              Clear Filters
-            </button>
-          )}
-        </div>
-      </form>
+      <Card className="mb-8">
+        <form onSubmit={handleSearch} className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 items-start">
+          <Input label="From" name="from" value={form.from} onChange={handleChange} placeholder="e.g. Malabe" />
+          <Input label="To" name="to" value={form.to} onChange={handleChange} placeholder="e.g. Colombo" />
+          <div className="sm:col-span-2">
+            <Button type="submit" variant="primary" size="md" className="w-full sm:w-auto">
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              Search
+            </Button>
+          </div>
+        </form>
+      </Card>
 
       <ErrorMessage message={error} />
       {loading && <Loading />}
-
-      {!loading && searched && buses.length > 0 && (
-        <p style={{ fontWeight: 600, color: 'var(--navy)', margin: '1rem 0 0.8rem' }}>
-          {buses.length} {buses.length === 1 ? 'bus' : 'buses'} found
-        </p>
-      )}
-
       {!loading && searched && buses.length === 0 && !error && (
-        <div className="card" style={{ textAlign: 'center', padding: '1.5rem' }}>
-          <h3 style={{ margin: '0 0 0.5rem 0' }}>No buses found</h3>
-          <p className="muted" style={{ margin: '0 0 1rem 0' }}>
-            We couldn't find buses matching your search. Try changing the starting point or destination.
-          </p>
-          <button className="btn btn-secondary btn-small" onClick={handleClear}>
-            View All Buses
-          </button>
-        </div>
+        <p className="text-sm text-gray-500">No buses found for this route. Try a different From/To.</p>
       )}
-
-      {buses.map((bus) => (
-        <BusCard key={bus._id} bus={bus} />
-      ))}
+      <div className="space-y-4">
+        {buses.map((bus) => (
+          <BusCard key={bus._id} bus={bus} />
+        ))}
+      </div>
     </div>
   );
 };

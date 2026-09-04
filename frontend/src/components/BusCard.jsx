@@ -1,43 +1,39 @@
 import { Link } from 'react-router-dom';
 import StatusTag from './StatusTag.jsx';
+import Card from './ui/Card.jsx';
 
-const getSeatStatus = (freeSeats) => {
-  if (freeSeats === 0) return '🔴 Full';
-  if (freeSeats <= 5) return '🟠 Few seats left';
-  return '🟢 Seats available';
+const BusCard = ({ bus }) => {
+  const fillPct = bus.capacity ? Math.round((bus.freeSeats / bus.capacity) * 100) : 0;
+
+  return (
+    <Card className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="inline-flex items-center rounded-md bg-navy-50 text-navy-800 text-xs font-bold px-2 py-1">
+            {bus.busNumber}
+          </span>
+          <span className="font-bold text-navy-800 text-base sm:text-lg">
+            {bus.from} <span className="text-orange-500">→</span> {bus.to}
+          </span>
+        </div>
+        <p className="text-sm text-gray-500 mt-1">
+          Fare: Rs. {bus.fare} · Driver: {bus.driver?.name || 'N/A'} · Conductor:{' '}
+          {bus.conductor?.name || 'Not assigned'}
+        </p>
+      </div>
+
+      <div className="sm:text-right shrink-0">
+        <StatusTag status={bus.status} />
+        <div className="mt-2 font-bold text-navy-800">
+          {bus.freeSeats} / {bus.capacity} seats free
+        </div>
+        <div className="mt-1 h-1.5 w-32 rounded-full bg-gray-100 overflow-hidden sm:ml-auto">
+          <div className="h-full rounded-full bg-orange-500" style={{ width: `${fillPct}%` }} />
+        </div>
+      </div>
+    </Card>
+  );
 };
-
-const BusCard = ({ bus }) => (
-  <div className="card bus-card">
-    <div>
-      <div className="route">
-        {bus.busNumber} — {bus.from} → {bus.to}
-      </div>
-      <div className="muted">
-        Fare: Rs. {bus.fare} · Driver: {bus.driver?.name || 'N/A'} · Conductor:{' '}
-        {bus.conductor?.name || 'Not assigned'}
-      </div>
-    </div>
-    <div style={{ textAlign: 'right' }}>
-      <StatusTag status={bus.status} />
-      <div style={{ marginTop: '0.4rem', fontWeight: 700 }}>
-        {bus.freeSeats} / {bus.capacity} seats free
-      </div>
-      <div style={{ fontSize: '0.8rem', marginTop: '0.15rem' }}>
-        {getSeatStatus(bus.freeSeats)}
-      </div>
-      <div style={{ marginTop: '0.5rem' }}>
-        <Link
-          to={`/passenger/buses/${bus._id}`}
-          className="btn btn-small"
-          style={{ textDecoration: 'none', display: 'inline-block' }}
-        >
-          View Details
-        </Link>
-      </div>
-    </div>
-  </div>
-);
 
 export default BusCard;
 
