@@ -26,7 +26,7 @@ const Navbar = () => {
         </Link>
 
         <nav className="hidden md:flex items-center gap-6">
-          <NavLink to="/search" className={linkClasses}>Search Buses</NavLink>
+          {user && <NavLink to="/search" className={linkClasses}>Search Buses</NavLink>}
           <NavLink to="/about" className={linkClasses}>About</NavLink>
           {user?.role === 'admin' && <NavLink to="/admin" className={linkClasses}>Admin</NavLink>}
           {user?.role === 'driver' && <NavLink to="/driver" className={linkClasses}>Driver</NavLink>}
@@ -60,7 +60,11 @@ const Navbar = () => {
 
       {open && (
         <nav className="md:hidden border-t border-gray-100 bg-white px-4 sm:px-6 py-3 flex flex-col gap-3">
-          <NavLink to="/search" className={linkClasses} onClick={() => setOpen(false)}>Search Buses</NavLink>
+          {user && (
+            <NavLink to="/search" className={linkClasses} onClick={() => setOpen(false)}>
+              Search Buses
+            </NavLink>
+          )}
           <NavLink to="/about" className={linkClasses} onClick={() => setOpen(false)}>About</NavLink>
           {user?.role === 'admin' && (
             <NavLink to="/admin" className={linkClasses} onClick={() => setOpen(false)}>Admin</NavLink>
