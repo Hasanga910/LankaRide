@@ -13,6 +13,15 @@ const busSchema = new mongoose.Schema(
       enum: ['Not Started', 'En Route', 'Arrived'],
       default: 'Not Started',
     },
+    trackingActive: {
+      type: Boolean,
+      default: false,
+    },
+    currentLocation: {
+      latitude: { type: Number, default: null },
+      longitude: { type: Number, default: null },
+      updatedAt: { type: Date, default: null },
+    },
     driver: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     conductor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   },
@@ -20,3 +29,4 @@ const busSchema = new mongoose.Schema(
 );
 
 export default mongoose.model('Bus', busSchema);
+

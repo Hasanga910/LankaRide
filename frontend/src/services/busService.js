@@ -29,3 +29,19 @@ export const updateSeats = async (id, action, value) => {
   const { data } = await api.put(`/buses/${id}/seats`, { action, value });
   return data;
 };
+
+export const updateLocation = async (id, coords) => {
+  const { data } = await api.put(`/buses/${id}/location`, coords);
+  return data;
+};
+
+export const stopLocationTracking = async (id) => {
+  const { data } = await api.put(`/buses/${id}/location/stop`);
+  return data;
+};
+
+export const getBusLocation = async (id) => {
+  const { data } = await api.get(`/buses/${id}/location`);
+  return data;
+};
+
