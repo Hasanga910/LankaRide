@@ -1,62 +1,39 @@
 import { Link } from 'react-router-dom';
 import StatusTag from './StatusTag.jsx';
+import Card from './ui/Card.jsx';
 
-const BusCard = ({ bus }) => (
-  <div className="card bus-card">
-    <div>
-      <div className="route" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
-        <span>{bus.busNumber} — {bus.from} → {bus.to}</span>
-        {bus.trackingActive && (
-          <span className="tag tag-en-route" style={{ fontSize: '0.72rem' }}>
-            ● LIVE
+const BusCard = ({ bus }) => {
+  const fillPct = bus.capacity ? Math.round((bus.freeSeats / bus.capacity) * 100) : 0;
+
+  return (
+    <Card className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="inline-flex items-center rounded-md bg-navy-50 text-navy-800 text-xs font-bold px-2 py-1">
+            {bus.busNumber}
           </span>
-        )}
+          <span className="font-bold text-navy-800 text-base sm:text-lg">
+            {bus.from} <span className="text-orange-500">→</span> {bus.to}
+          </span>
+        </div>
+        <p className="text-sm text-gray-500 mt-1">
+          Fare: Rs. {bus.fare} · Driver: {bus.driver?.name || 'N/A'} · Conductor:{' '}
+          {bus.conductor?.name || 'Not assigned'}
+        </p>
       </div>
-      <div className="muted" style={{ marginTop: '0.2rem' }}>
-        Fare: Rs. {bus.fare} · Driver: {bus.driver?.name || 'N/A'} · Conductor:{' '}
-        {bus.conductor?.name || 'Not assigned'}
-      </div>
-    </div>
-    <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.4rem' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+
+      <div className="sm:text-right shrink-0">
         <StatusTag status={bus.status} />
+        <div className="mt-2 font-bold text-navy-800">
+          {bus.freeSeats} / {bus.capacity} seats free
+        </div>
+        <div className="mt-1 h-1.5 w-32 rounded-full bg-gray-100 overflow-hidden sm:ml-auto">
+          <div className="h-full rounded-full bg-orange-500" style={{ width: `${fillPct}%` }} />
+        </div>
       </div>
-      <div style={{ fontWeight: 700 }}>
-        {bus.freeSeats} / {bus.capacity} seats free
-      </div>
-      {bus.trackingActive ? (
-        <Link
-          to={`/track/${bus._id}`}
-          className="btn btn-small"
-          style={{
-            textDecoration: 'none',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.3rem',
-            background: 'var(--orange)',
-          }}
-        >
-          📍 Track Bus
-        </Link>
-      ) : (
-        <button
-          className="btn btn-small btn-secondary"
-          disabled
-          style={{
-            opacity: 0.55,
-            cursor: 'not-allowed',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.3rem',
-          }}
-          title="Location sharing has not been started by the conductor for this bus."
-        >
-          📍 Tracking Unavailable
-        </button>
-      )}
-    </div>
-  </div>
-);
+    </Card>
+  );
+};
 
 export default BusCard;
 

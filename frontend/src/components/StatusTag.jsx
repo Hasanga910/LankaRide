@@ -1,9 +1,11 @@
-const classMap = {
-  'Not Started': 'tag tag-not-started',
-  'En Route': 'tag tag-en-route',
-  Arrived: 'tag tag-arrived',
+import Badge from './ui/Badge.jsx';
+
+const variantMap = {
+  'Not Started': 'warning',
+  'En Route': 'success',
+  Arrived: 'info',
 };
 
-const StatusTag = ({ status }) => <span className={classMap[status] || 'tag'}>{status}</span>;
+const StatusTag = ({ status }) => <Badge variant={variantMap[status] || 'neutral'}>{status}</Badge>;
 
 export default StatusTag;

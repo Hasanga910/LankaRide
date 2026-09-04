@@ -1,8 +1,8 @@
 {
-  "name": "busbuddy-lk-backend",
+  "name": "lankaride-backend",
   "version": "1.0.0",
   "type": "module",
-  "description": "BusBuddy LK - role-based bus management & live seat availability API (MERN)",
+  "description": "LankaRide - role-based bus management & live seat availability API (MERN)",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
