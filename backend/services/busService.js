@@ -19,9 +19,16 @@ export const createBus = async (driverId, { busNumber, from, to, capacity, fare 
     capacity,
     fare: fare || 0,
     freeSeats: capacity, // starts full of free seats until the conductor updates it
+    trackingActive: false,
+    currentLocation: {
+      latitude: null,
+      longitude: null,
+      updatedAt: null,
+    },
     driver: driverId,
   });
 };
+
 
 export const getMyBuses = async (driverId) => Bus.find({ driver: driverId }).sort({ createdAt: -1 });
 
