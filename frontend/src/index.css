@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --navy: #0b1f4e;
   --orange: #e96a25;
