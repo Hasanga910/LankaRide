@@ -30,6 +30,11 @@ export const updateSeats = async (id, action, value) => {
   return data;
 };
 
+export const getBusById = async (id) => {
+  const { data } = await api.get(`/buses/${id}`);
+  return data;
+};
+
 export const updateLocation = async (id, coords) => {
   const { data } = await api.put(`/buses/${id}/location`, coords);
   return data;
@@ -44,4 +49,5 @@ export const getBusLocation = async (id) => {
   const { data } = await api.get(`/buses/${id}/location`);
   return data;
 };
+
 

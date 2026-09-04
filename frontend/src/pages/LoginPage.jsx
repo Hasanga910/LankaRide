@@ -24,6 +24,14 @@ const LoginPage = () => {
       setError('Please enter both email and password.');
       return;
     }
+    if (form.password.length < 5) {
+      setError('Password must be at least 5 characters long.');
+      return;
+    }
+    if (!/[^A-Za-z0-9]/.test(form.password)) {
+      setError('Password must contain at least one special character.');
+      return;
+    }
     setLoading(true);
     try {
       const user = await login(form.email, form.password);

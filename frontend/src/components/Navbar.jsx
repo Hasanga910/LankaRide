@@ -28,6 +28,9 @@ const Navbar = () => {
         <nav className="hidden md:flex items-center gap-6">
           {user && <NavLink to="/search" className={linkClasses}>Search Buses</NavLink>}
           <NavLink to="/about" className={linkClasses}>About</NavLink>
+          {user?.role === 'passenger' && (
+            <NavLink to="/passenger/profile" className={linkClasses}>My Profile</NavLink>
+          )}
           {user?.role === 'admin' && <NavLink to="/admin" className={linkClasses}>Admin</NavLink>}
           {user?.role === 'driver' && <NavLink to="/driver" className={linkClasses}>Driver</NavLink>}
           {user?.role === 'conductor' && <NavLink to="/conductor" className={linkClasses}>Conductor</NavLink>}
@@ -66,6 +69,9 @@ const Navbar = () => {
             </NavLink>
           )}
           <NavLink to="/about" className={linkClasses} onClick={() => setOpen(false)}>About</NavLink>
+          {user?.role === 'passenger' && (
+            <NavLink to="/passenger/profile" className={linkClasses} onClick={() => setOpen(false)}>My Profile</NavLink>
+          )}
           {user?.role === 'admin' && (
             <NavLink to="/admin" className={linkClasses} onClick={() => setOpen(false)}>Admin</NavLink>
           )}
