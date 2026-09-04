@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.js';
 import ErrorMessage from '../components/ErrorMessage.jsx';
 
-const roleHome = { admin: '/admin', driver: '/driver', conductor: '/conductor', passenger: '/search' };
+const roleHome = { admin: '/admin', driver: '/driver', conductor: '/conductor', passenger: '/passenger' };
 
 const LoginPage = () => {
   const { login } = useAuth();

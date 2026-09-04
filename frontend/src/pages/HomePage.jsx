@@ -5,6 +5,7 @@ const roleDashboard = {
   admin: { to: '/admin', label: 'Go to Admin Dashboard' },
   driver: { to: '/driver', label: 'Go to Driver Dashboard' },
   conductor: { to: '/conductor', label: 'Go to Conductor Dashboard' },
+  passenger: { to: '/passenger', label: 'Go to Passenger Dashboard' },
 };
 
 const HomePage = () => {

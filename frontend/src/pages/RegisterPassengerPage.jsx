@@ -26,7 +26,7 @@ const RegisterPassengerPage = () => {
     setLoading(true);
     try {
       await registerPassenger(form);
-      navigate('/search');
+      navigate('/passenger');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed.');
     } finally {

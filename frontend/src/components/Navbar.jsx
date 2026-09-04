@@ -16,6 +16,7 @@ const Navbar = () => {
       <div className="links">
         <Link to="/search">Search Buses</Link>
         <Link to="/about">About</Link>
+        {user?.role === 'passenger' && <Link to="/passenger">My Dashboard</Link>}
         {user?.role === 'admin' && <Link to="/admin">Admin</Link>}
         {user?.role === 'driver' && <Link to="/driver">Driver</Link>}
         {user?.role === 'conductor' && <Link to="/conductor">Conductor</Link>}

@@ -16,10 +16,35 @@ const SearchBusesPage = () => {
   const handleSearch = async (e) => {
     e.preventDefault();
     setError('');
+
+    const from = form.from.trim();
+    const to = form.to.trim();
+
+    if (!from && !to) {
+      setError('Please enter both From and To locations.');
+      setBuses([]);
+      setSearched(false);
+      return;
+    }
+
+    if (!from) {
+      setError('Please enter a From location.');
+      setBuses([]);
+      setSearched(false);
+      return;
+    }
+
+    if (!to) {
+      setError('Please enter a To location.');
+      setBuses([]);
+      setSearched(false);
+      return;
+    }
+
     setLoading(true);
     setSearched(true);
     try {
-      setBuses(await busService.searchBuses(form.from, form.to));
+      setBuses(await busService.searchBuses(from, to));
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to search buses.');
     } finally {
@@ -40,7 +65,9 @@ const SearchBusesPage = () => {
           <input name="to" value={form.to} onChange={handleChange} placeholder="e.g. Colombo" />
         </div>
         <div style={{ gridColumn: '1 / -1' }}>
-          <button className="btn">Search</button>
+          <button className="btn" disabled={loading}>
+            {loading ? 'Searching…' : 'Search'}
+          </button>
         </div>
       </form>
 
@@ -57,3 +84,4 @@ const SearchBusesPage = () => {
 };
 
 export default SearchBusesPage;
+
