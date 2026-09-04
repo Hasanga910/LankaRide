@@ -1,3 +1,5 @@
-const ErrorMessage = ({ message }) => (message ? <div className="error">{message}</div> : null);
+import Alert from './ui/Alert.jsx';
+
+const ErrorMessage = ({ message }) => (message ? <Alert variant="error">{message}</Alert> : null);
 
 export default ErrorMessage;

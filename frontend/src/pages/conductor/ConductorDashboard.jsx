@@ -3,6 +3,11 @@ import * as busService from '../../services/busService.js';
 import StatusTag from '../../components/StatusTag.jsx';
 import ErrorMessage from '../../components/ErrorMessage.jsx';
 import Loading from '../../components/Loading.jsx';
+import Card from '../../components/ui/Card.jsx';
+import Input from '../../components/ui/Input.jsx';
+import Select from '../../components/ui/Select.jsx';
+import Button from '../../components/ui/Button.jsx';
+import Alert from '../../components/ui/Alert.jsx';
 
 const ConductorDashboard = () => {
   const [buses, setBuses] = useState([]);
@@ -74,79 +79,82 @@ const ConductorDashboard = () => {
   };
 
   return (
-    <div className="container">
-      <h2>Conductor Dashboard</h2>
+    <div>
       <ErrorMessage message={error} />
 
-      <div className="card">
-        <label>Select a Bus to Manage</label>
-        <select value={selectedId} onChange={(e) => handleSelect(e.target.value)}>
+      <Card className="mb-6">
+        <Select
+          label="Select a Bus to Manage"
+          value={selectedId}
+          onChange={(e) => handleSelect(e.target.value)}
+          containerClassName="mb-0"
+        >
           <option value="">-- Choose a bus --</option>
           {buses.map((b) => (
             <option key={b._id} value={b._id}>
               {b.busNumber} ({b.from} → {b.to})
             </option>
           ))}
-        </select>
-      </div>
+        </Select>
+      </Card>
 
       {loading && <Loading />}
 
       {selectedBus && (
-        <div className="grid-2">
-          <div className="card">
-            <h3>Free Seats — Manual Update</h3>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          <Card>
+            <h3 className="text-base font-bold text-navy-800 mb-3">Free Seats — Manual Update</h3>
             <StatusTag status={selectedBus.status} />
-            <div className="seat-controls" style={{ marginTop: '0.8rem' }}>
-              <button className="btn btn-small" onClick={() => handleSeatChange('decrement')}>
-                − Passenger Boarded
-              </button>
-              <span className="seat-count">
+            <div className="flex items-center justify-center gap-4 mt-6 mb-2">
+              <Button variant="outline" size="sm" onClick={() => handleSeatChange('decrement')}>
+                − Boarded
+              </Button>
+              <span className="text-2xl font-extrabold text-navy-800 min-w-[5rem] text-center">
                 {selectedBus.freeSeats} / {selectedBus.capacity}
               </span>
-              <button className="btn btn-small btn-secondary" onClick={() => handleSeatChange('increment')}>
-                + Passenger Alighted
-              </button>
+              <Button variant="secondary" size="sm" onClick={() => handleSeatChange('increment')}>
+                + Alighted
+              </Button>
             </div>
-            <p className="muted" style={{ marginTop: '0.6rem' }}>
+            <p className="text-sm text-gray-500 mt-4">
               Seat count is updated manually — there is no automated ticketing step. It cannot go below 0
               or above the bus's total capacity.
             </p>
-          </div>
+          </Card>
 
-          <div className="card">
-            <h3>Edit Bus Details</h3>
-            {savedMsg && <div className="success">{savedMsg}</div>}
+          <Card>
+            <h3 className="text-base font-bold text-navy-800 mb-3">Edit Bus Details</h3>
+            {savedMsg && <Alert variant="success">{savedMsg}</Alert>}
             <form onSubmit={handleDetailsSubmit}>
-              <label>From</label>
-              <input
+              <Input
+                label="From"
                 value={detailsForm.from}
                 onChange={(e) => setDetailsForm({ ...detailsForm, from: e.target.value })}
               />
-              <label>To</label>
-              <input
+              <Input
+                label="To"
                 value={detailsForm.to}
                 onChange={(e) => setDetailsForm({ ...detailsForm, to: e.target.value })}
               />
-              <label>Capacity</label>
-              <input
+              <Input
+                label="Capacity"
                 type="number"
                 min="1"
                 value={detailsForm.capacity}
                 onChange={(e) => setDetailsForm({ ...detailsForm, capacity: e.target.value })}
               />
-              <label>Fare (Rs.)</label>
-              <input
+              <Input
+                label="Fare (Rs.)"
                 type="number"
                 min="0"
                 value={detailsForm.fare}
                 onChange={(e) => setDetailsForm({ ...detailsForm, fare: e.target.value })}
               />
-              <button className="btn" disabled={savingDetails}>
+              <Button type="submit" variant="primary" size="md" className="w-full mt-2" loading={savingDetails}>
                 {savingDetails ? 'Saving…' : 'Save Details'}
-              </button>
+              </Button>
             </form>
-          </div>
+          </Card>
         </div>
       )}
     </div>

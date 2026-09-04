@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar.jsx';
+import PublicLayout from './components/layout/PublicLayout.jsx';
+import AdminLayout from './components/layout/AdminLayout.jsx';
 import HomePage from './pages/HomePage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
@@ -12,41 +13,44 @@ import ProtectedRoute from './routes/ProtectedRoute.jsx';
 
 function App() {
   return (
-    <>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPassengerPage />} />
-        <Route path="/search" element={<SearchBusesPage />} />
+    <Routes>
+      <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
+      <Route path="/about" element={<PublicLayout><AboutPage /></PublicLayout>} />
+      <Route path="/login" element={<PublicLayout><LoginPage /></PublicLayout>} />
+      <Route path="/register" element={<PublicLayout><RegisterPassengerPage /></PublicLayout>} />
+      <Route path="/search" element={<PublicLayout><SearchBusesPage /></PublicLayout>} />
 
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute roles={['admin']}>
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute roles={['admin']}>
+            <AdminLayout title="Admin Dashboard">
               <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/driver"
-          element={
-            <ProtectedRoute roles={['driver']}>
+            </AdminLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/driver"
+        element={
+          <ProtectedRoute roles={['driver']}>
+            <AdminLayout title="Driver Dashboard">
               <DriverDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/conductor"
-          element={
-            <ProtectedRoute roles={['conductor']}>
+            </AdminLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/conductor"
+        element={
+          <ProtectedRoute roles={['conductor']}>
+            <AdminLayout title="Conductor Dashboard">
               <ConductorDashboard />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </>
+            </AdminLayout>
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 }
 

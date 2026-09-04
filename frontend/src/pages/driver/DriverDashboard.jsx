@@ -3,6 +3,11 @@ import * as busService from '../../services/busService.js';
 import StatusTag from '../../components/StatusTag.jsx';
 import ErrorMessage from '../../components/ErrorMessage.jsx';
 import Loading from '../../components/Loading.jsx';
+import Card from '../../components/ui/Card.jsx';
+import Input from '../../components/ui/Input.jsx';
+import Select from '../../components/ui/Select.jsx';
+import Button from '../../components/ui/Button.jsx';
+import Alert from '../../components/ui/Alert.jsx';
 
 const emptyForm = { busNumber: '', from: '', to: '', capacity: '', fare: '' };
 const statuses = ['Not Started', 'En Route', 'Arrived'];
@@ -72,58 +77,73 @@ const DriverDashboard = () => {
   };
 
   return (
-    <div className="container">
-      <h2>Driver Dashboard</h2>
-      <div className="grid-2">
-        <div className="card">
-          <h3>Add Bus</h3>
-          <ErrorMessage message={error} />
-          {success && <div className="success">{success}</div>}
-          <form onSubmit={handleSubmit}>
-            <label>Bus Number / Plate</label>
-            <input name="busNumber" value={form.busNumber} onChange={handleChange} />
-            <label>From</label>
-            <input name="from" value={form.from} onChange={handleChange} />
-            <label>To</label>
-            <input name="to" value={form.to} onChange={handleChange} />
-            <label>Total Capacity</label>
-            <input name="capacity" type="number" min="1" value={form.capacity} onChange={handleChange} />
-            <label>Fare (Rs.)</label>
-            <input name="fare" type="number" min="0" value={form.fare} onChange={handleChange} />
-            <button className="btn" disabled={submitting}>
-              {submitting ? 'Adding…' : 'Add Bus'}
-            </button>
-          </form>
-        </div>
+    <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
+      <Card>
+        <h3 className="text-base font-bold text-navy-800 mb-4">Add Bus</h3>
+        <ErrorMessage message={error} />
+        {success && <Alert variant="success">{success}</Alert>}
+        <form onSubmit={handleSubmit}>
+          <Input label="Bus Number / Plate" name="busNumber" value={form.busNumber} onChange={handleChange} />
+          <Input label="From" name="from" value={form.from} onChange={handleChange} />
+          <Input label="To" name="to" value={form.to} onChange={handleChange} />
+          <Input
+            label="Total Capacity"
+            name="capacity"
+            type="number"
+            min="1"
+            value={form.capacity}
+            onChange={handleChange}
+          />
+          <Input label="Fare (Rs.)" name="fare" type="number" min="0" value={form.fare} onChange={handleChange} />
+          <Button type="submit" variant="primary" size="md" className="w-full mt-2" loading={submitting}>
+            {submitting ? 'Adding…' : 'Add Bus'}
+          </Button>
+        </form>
+      </Card>
 
-        <div>
-          <h3 style={{ marginTop: 0 }}>My Buses</h3>
-          {loading ? (
-            <Loading />
-          ) : buses.length === 0 ? (
-            <p className="muted">You haven't added any buses yet.</p>
-          ) : (
-            buses.map((bus) => (
-              <div key={bus._id} className="card">
-                <div className="route">
-                  {bus.busNumber} — {bus.from} → {bus.to}
-                </div>
-                <p className="muted">{bus.freeSeats} / {bus.capacity} seats free</p>
-                <StatusTag status={bus.status} />
-                <div style={{ marginTop: '0.6rem' }}>
-                  <label>Update Trip Status</label>
-                  <select value={bus.status} onChange={(e) => handleStatusChange(bus._id, e.target.value)}>
+      <div>
+        <h3 className="text-base font-bold text-navy-800 mb-4">My Buses</h3>
+        {loading ? (
+          <Loading />
+        ) : buses.length === 0 ? (
+          <p className="text-sm text-gray-500">You haven't added any buses yet.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {buses.map((bus) => {
+              const fillPct = bus.capacity ? Math.round((bus.freeSeats / bus.capacity) * 100) : 0;
+              return (
+                <Card key={bus._id}>
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="font-bold text-navy-800">
+                        {bus.busNumber} — {bus.from} <span className="text-orange-500">→</span> {bus.to}
+                      </p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {bus.freeSeats} / {bus.capacity} seats free
+                      </p>
+                    </div>
+                    <StatusTag status={bus.status} />
+                  </div>
+                  <div className="mt-2 h-1.5 w-full rounded-full bg-gray-100 overflow-hidden">
+                    <div className="h-full rounded-full bg-orange-500" style={{ width: `${fillPct}%` }} />
+                  </div>
+                  <Select
+                    label="Update Trip Status"
+                    value={bus.status}
+                    onChange={(e) => handleStatusChange(bus._id, e.target.value)}
+                    containerClassName="mb-0 mt-4"
+                  >
                     {statuses.map((s) => (
                       <option key={s} value={s}>
                         {s}
                       </option>
                     ))}
-                  </select>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+                  </Select>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
