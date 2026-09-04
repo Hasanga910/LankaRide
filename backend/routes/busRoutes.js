@@ -30,8 +30,10 @@ router.put('/:id/seats', protect, authorize('conductor'), updateSeats);
 router.put('/:id/location', protect, authorize('conductor'), updateLocation);
 router.put('/:id/location/stop', protect, authorize('conductor'), stopTracking);
 
-// Passenger — bus details (keep last: avoids clashing with /search or /mine)
-router.get('/:id', protect, authorize('passenger'), getBusById);
+// Passenger — live location & bus details (keep last: avoids clashing with /search or /mine)
+router.get('/:id/location', getBusLocation);
+router.get('/:id', protect, authorize('passenger', 'conductor', 'driver', 'admin'), getBusById);
 
 export default router;
+
 

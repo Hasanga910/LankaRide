@@ -45,7 +45,22 @@ const BusCard = ({ bus }) => {
         <div className="h-1.5 w-32 rounded-full bg-gray-100 overflow-hidden sm:ml-auto">
           <div className="h-full rounded-full bg-orange-500" style={{ width: `${fillPct}%` }} />
         </div>
-        <div className="mt-2">
+        <div className="mt-2 flex items-center gap-2 flex-wrap sm:justify-end">
+          {bus.trackingActive ? (
+            <Button to={`/track/${bus._id}`} variant="primary" size="sm">
+              📍 Track Bus
+            </Button>
+          ) : (
+            <Button
+              variant="secondary"
+              size="sm"
+              disabled
+              className="opacity-50 cursor-not-allowed"
+              title="Location sharing is currently inactive for this bus"
+            >
+              📍 Tracking Unavailable
+            </Button>
+          )}
           <Button to={`/passenger/buses/${bus._id}`} variant="outline" size="sm">
             View Details →
           </Button>
@@ -56,6 +71,7 @@ const BusCard = ({ bus }) => {
 };
 
 export default BusCard;
+
 
 
 

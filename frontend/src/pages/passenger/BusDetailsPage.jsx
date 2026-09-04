@@ -94,15 +94,30 @@ const BusDetailsPage = () => {
                 </div>
               </div>
 
-              <div className="shrink-0">
+              <div className="shrink-0 flex items-center gap-2">
+                {bus.trackingActive ? (
+                  <Button to={`/track/${bus._id}`} variant="primary" size="sm">
+                    📍 Live Map
+                  </Button>
+                ) : (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled
+                    className="opacity-50 cursor-not-allowed"
+                    title="Location sharing is currently inactive"
+                  >
+                    📍 Offline
+                  </Button>
+                )}
                 <Button
-                  variant="primary"
+                  variant="outline"
                   size="sm"
                   onClick={() => fetchBus(true)}
                   loading={refreshing}
                   disabled={refreshing || loading}
                 >
-                  {refreshing ? 'Refreshing…' : 'Refresh Availability'}
+                  {refreshing ? 'Refreshing…' : 'Refresh'}
                 </Button>
               </div>
             </div>
@@ -111,6 +126,7 @@ const BusDetailsPage = () => {
               <div className="h-full rounded-full bg-orange-500 transition-all duration-300" style={{ width: `${fillPct}%` }} />
             </div>
           </Card>
+
 
           {/* Bus & Staff Details Card */}
           <Card>
