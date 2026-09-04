@@ -20,8 +20,10 @@ function App() {
       <Route path="/login" element={<PublicLayout><LoginPage /></PublicLayout>} />
       <Route path="/register" element={<PublicLayout><RegisterPassengerPage /></PublicLayout>} />
       <Route path="/search" element={<PublicLayout><SearchBusesPage /></PublicLayout>} />
+      <Route path="/track/:id" element={<PublicLayout><TrackBusPage /></PublicLayout>} />
 
       <Route
+
         path="/admin"
         element={
           <ProtectedRoute roles={['admin']}>

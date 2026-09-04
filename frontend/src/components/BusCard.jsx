@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom';
 import StatusTag from './StatusTag.jsx';
 import Card from './ui/Card.jsx';
+import Button from './ui/Button.jsx';
+import Badge from './ui/Badge.jsx';
 
 const BusCard = ({ bus }) => {
   const fillPct = bus.capacity ? Math.round((bus.freeSeats / bus.capacity) * 100) : 0;
@@ -15,6 +16,11 @@ const BusCard = ({ bus }) => {
           <span className="font-bold text-navy-800 text-base sm:text-lg">
             {bus.from} <span className="text-orange-500">→</span> {bus.to}
           </span>
+          {bus.trackingActive && (
+            <Badge variant="success" size="sm" className="animate-pulse">
+              ● LIVE
+            </Badge>
+          )}
         </div>
         <p className="text-sm text-gray-500 mt-1">
           Fare: Rs. {bus.fare} · Driver: {bus.driver?.name || 'N/A'} · Conductor:{' '}
@@ -22,13 +28,38 @@ const BusCard = ({ bus }) => {
         </p>
       </div>
 
-      <div className="sm:text-right shrink-0">
-        <StatusTag status={bus.status} />
-        <div className="mt-2 font-bold text-navy-800">
+      <div className="sm:text-right shrink-0 flex flex-col items-start sm:items-end gap-2">
+        <div className="flex items-center gap-2">
+          <StatusTag status={bus.status} />
+        </div>
+        <div className="font-bold text-navy-800 text-sm sm:text-base">
           {bus.freeSeats} / {bus.capacity} seats free
         </div>
-        <div className="mt-1 h-1.5 w-32 rounded-full bg-gray-100 overflow-hidden sm:ml-auto">
+        <div className="h-1.5 w-32 rounded-full bg-gray-100 overflow-hidden sm:ml-auto">
           <div className="h-full rounded-full bg-orange-500" style={{ width: `${fillPct}%` }} />
+        </div>
+
+        <div className="mt-1">
+          {bus.trackingActive ? (
+            <Button
+              to={`/track/${bus._id}`}
+              variant="primary"
+              size="sm"
+              className="shadow-sm"
+            >
+              📍 Track Bus
+            </Button>
+          ) : (
+            <Button
+              variant="secondary"
+              size="sm"
+              disabled
+              className="opacity-50 cursor-not-allowed"
+              title="Location sharing is currently inactive for this bus"
+            >
+              📍 Tracking Unavailable
+            </Button>
+          )}
         </div>
       </div>
     </Card>
@@ -36,5 +67,6 @@ const BusCard = ({ bus }) => {
 };
 
 export default BusCard;
+
 
 

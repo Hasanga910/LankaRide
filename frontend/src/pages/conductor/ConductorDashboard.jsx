@@ -210,62 +210,144 @@ const ConductorDashboard = () => {
       {loading && <Loading />}
 
       {selectedBus && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-          <Card>
-            <h3 className="text-base font-bold text-navy-800 mb-3">Free Seats — Manual Update</h3>
-            <StatusTag status={selectedBus.status} />
-            <div className="flex items-center justify-center gap-4 mt-6 mb-2">
-              <Button variant="outline" size="sm" onClick={() => handleSeatChange('decrement')}>
-                − Boarded
-              </Button>
-              <span className="text-2xl font-extrabold text-navy-800 min-w-[5rem] text-center">
-                {selectedBus.freeSeats} / {selectedBus.capacity}
-              </span>
-              <Button variant="secondary" size="sm" onClick={() => handleSeatChange('increment')}>
-                + Alighted
-              </Button>
+        <>
+          {/* Live GPS Location Tracking Panel */}
+          <Card className="mb-6 border-l-4 border-orange-500">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h3 className="text-base font-bold text-navy-800 flex items-center gap-2">
+                  <span>📍</span> Live Location Tracking
+                </h3>
+                <p className="text-sm text-gray-500 mt-1">
+                  Share real-time GPS location from your device so passengers can track this bus on the map.
+                </p>
+              </div>
+              <div className="shrink-0">
+                {trackingActive ? (
+                  <Button variant="danger" size="md" onClick={stopTrackingHandler}>
+                    🛑 Stop Location Sharing
+                  </Button>
+                ) : (
+                  <Button
+                    variant="primary"
+                    size="md"
+                    onClick={startTrackingHandler}
+                    disabled={startingTracking}
+                    loading={startingTracking}
+                  >
+                    🚀 Start Location Sharing
+                  </Button>
+                )}
+              </div>
             </div>
-            <p className="text-sm text-gray-500 mt-4">
-              Seat count is updated manually — there is no automated ticketing step. It cannot go below 0
-              or above the bus's total capacity.
-            </p>
+
+            {trackingError && (
+              <div className="mt-4">
+                <Alert variant="danger">{trackingError}</Alert>
+              </div>
+            )}
+
+            <div className="mt-4 p-4 rounded-lg bg-navy-50/60 border border-navy-100">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div>
+                  <span className="text-gray-500 block text-xs font-medium uppercase">Bus</span>
+                  <span className="font-bold text-navy-900">{selectedBus.busNumber}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500 block text-xs font-medium uppercase">Route</span>
+                  <span className="font-semibold text-navy-800">
+                    {selectedBus.from} → {selectedBus.to}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-500 block text-xs font-medium uppercase">Status</span>
+                  <div className="mt-0.5">
+                    {trackingActive ? (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-success-bg text-success animate-pulse">
+                        <span className="h-2 w-2 rounded-full bg-success"></span>
+                        LIVE SHARING
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-200 text-gray-700">
+                        OFFLINE
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <span className="text-gray-500 block text-xs font-medium uppercase">Last Updated</span>
+                  <span className="text-gray-700 font-medium">
+                    {lastUpdated ? lastUpdated.toLocaleTimeString() : 'Not shared yet'}
+                  </span>
+                </div>
+              </div>
+
+              {lastCoords && (
+                <div className="mt-2 text-xs text-gray-400">
+                  Coordinates: {lastCoords.latitude.toFixed(5)}, {lastCoords.longitude.toFixed(5)}
+                </div>
+              )}
+            </div>
           </Card>
 
-          <Card>
-            <h3 className="text-base font-bold text-navy-800 mb-3">Edit Bus Details</h3>
-            {savedMsg && <Alert variant="success">{savedMsg}</Alert>}
-            <form onSubmit={handleDetailsSubmit}>
-              <Input
-                label="From"
-                value={detailsForm.from}
-                onChange={(e) => setDetailsForm({ ...detailsForm, from: e.target.value })}
-              />
-              <Input
-                label="To"
-                value={detailsForm.to}
-                onChange={(e) => setDetailsForm({ ...detailsForm, to: e.target.value })}
-              />
-              <Input
-                label="Capacity"
-                type="number"
-                min="1"
-                value={detailsForm.capacity}
-                onChange={(e) => setDetailsForm({ ...detailsForm, capacity: e.target.value })}
-              />
-              <Input
-                label="Fare (Rs.)"
-                type="number"
-                min="0"
-                value={detailsForm.fare}
-                onChange={(e) => setDetailsForm({ ...detailsForm, fare: e.target.value })}
-              />
-              <Button type="submit" variant="primary" size="md" className="w-full mt-2" loading={savingDetails}>
-                {savingDetails ? 'Saving…' : 'Save Details'}
-              </Button>
-            </form>
-          </Card>
-        </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            <Card>
+              <h3 className="text-base font-bold text-navy-800 mb-3">Free Seats — Manual Update</h3>
+              <StatusTag status={selectedBus.status} />
+              <div className="flex items-center justify-center gap-4 mt-6 mb-2">
+                <Button variant="outline" size="sm" onClick={() => handleSeatChange('decrement')}>
+                  − Boarded
+                </Button>
+                <span className="text-2xl font-extrabold text-navy-800 min-w-[5rem] text-center">
+                  {selectedBus.freeSeats} / {selectedBus.capacity}
+                </span>
+                <Button variant="secondary" size="sm" onClick={() => handleSeatChange('increment')}>
+                  + Alighted
+                </Button>
+              </div>
+              <p className="text-sm text-gray-500 mt-4">
+                Seat count is updated manually — there is no automated ticketing step. It cannot go below 0
+                or above the bus's total capacity.
+              </p>
+            </Card>
+
+            <Card>
+              <h3 className="text-base font-bold text-navy-800 mb-3">Edit Bus Details</h3>
+              {savedMsg && <Alert variant="success">{savedMsg}</Alert>}
+              <form onSubmit={handleDetailsSubmit}>
+                <Input
+                  label="From"
+                  value={detailsForm.from}
+                  onChange={(e) => setDetailsForm({ ...detailsForm, from: e.target.value })}
+                />
+                <Input
+                  label="To"
+                  value={detailsForm.to}
+                  onChange={(e) => setDetailsForm({ ...detailsForm, to: e.target.value })}
+                />
+                <Input
+                  label="Capacity"
+                  type="number"
+                  min="1"
+                  value={detailsForm.capacity}
+                  onChange={(e) => setDetailsForm({ ...detailsForm, capacity: e.target.value })}
+                />
+                <Input
+                  label="Fare (Rs.)"
+                  type="number"
+                  min="0"
+                  value={detailsForm.fare}
+                  onChange={(e) => setDetailsForm({ ...detailsForm, fare: e.target.value })}
+                />
+                <Button type="submit" variant="primary" size="md" className="w-full mt-2" loading={savingDetails}>
+                  {savingDetails ? 'Saving…' : 'Save Details'}
+                </Button>
+              </form>
+            </Card>
+          </div>
+        </>
       )}
+
     </div>
   );
 };
