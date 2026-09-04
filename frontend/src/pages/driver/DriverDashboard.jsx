@@ -4,7 +4,7 @@ import StatusTag from '../../components/StatusTag.jsx';
 import ErrorMessage from '../../components/ErrorMessage.jsx';
 import Loading from '../../components/Loading.jsx';
 
-const emptyForm = { busNumber: '', from: '', to: '', capacity: '', fare: '' };
+const emptyForm = { busNumber: '', route: '', from: '', to: '', capacity: '', fare: '' };
 const statuses = ['Not Started', 'En Route', 'Arrived'];
 
 const DriverDashboard = () => {
@@ -36,8 +36,8 @@ const DriverDashboard = () => {
     e.preventDefault();
     setError('');
     setSuccess('');
-    if (!form.busNumber || !form.from || !form.to || !form.capacity) {
-      setError('Bus number, from, to and capacity are required.');
+    if (!form.busNumber || !form.route || !form.from || !form.to || !form.capacity) {
+      setError('Bus number, route, from, to and capacity are required.');
       return;
     }
     if (Number(form.capacity) <= 0) {
@@ -82,6 +82,8 @@ const DriverDashboard = () => {
           <form onSubmit={handleSubmit}>
             <label>Bus Number / Plate</label>
             <input name="busNumber" value={form.busNumber} onChange={handleChange} />
+            <label>Bus Route</label>
+            <input name="route" value={form.route} onChange={handleChange} />
             <label>From</label>
             <input name="from" value={form.from} onChange={handleChange} />
             <label>To</label>
@@ -106,7 +108,7 @@ const DriverDashboard = () => {
             buses.map((bus) => (
               <div key={bus._id} className="card">
                 <div className="route">
-                  {bus.busNumber} — {bus.from} → {bus.to}
+                  {bus.busNumber} {bus.route ? `| ${bus.route} |` : '—'} {bus.from} → {bus.to}
                 </div>
                 <p className="muted">{bus.freeSeats} / {bus.capacity} seats free</p>
                 <StatusTag status={bus.status} />

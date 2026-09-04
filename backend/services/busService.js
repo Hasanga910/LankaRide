@@ -5,7 +5,7 @@ const populated = (query) =>
 
 // --- Driver actions -------------------------------------------------------
 
-export const createBus = async (driverId, { busNumber, from, to, capacity, fare }) => {
+export const createBus = async (driverId, { busNumber, route, from, to, capacity, fare }) => {
   const exists = await Bus.findOne({ busNumber });
   if (exists) {
     const error = new Error('A bus with this number is already registered');
@@ -14,6 +14,7 @@ export const createBus = async (driverId, { busNumber, from, to, capacity, fare 
   }
   return Bus.create({
     busNumber,
+    route,
     from,
     to,
     capacity,

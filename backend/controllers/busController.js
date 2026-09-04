@@ -2,14 +2,14 @@ import * as busService from '../services/busService.js';
 
 export const createBus = async (req, res) => {
   try {
-    const { busNumber, from, to, capacity, fare } = req.body;
-    if (!busNumber || !from || !to || !capacity) {
-      return res.status(400).json({ message: 'Bus number, from, to and capacity are required' });
+    const { busNumber, route, from, to, capacity, fare } = req.body;
+    if (!busNumber || !route || !from || !to || !capacity) {
+      return res.status(400).json({ message: 'Bus number, route, from, to and capacity are required' });
     }
     if (Number(capacity) <= 0) {
       return res.status(400).json({ message: 'Capacity must be greater than 0' });
     }
-    const bus = await busService.createBus(req.user._id, { busNumber, from, to, capacity, fare });
+    const bus = await busService.createBus(req.user._id, { busNumber, route, from, to, capacity, fare });
     res.status(201).json(bus);
   } catch (err) {
     res.status(err.statusCode || 500).json({ message: err.message });

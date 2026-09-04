@@ -69,6 +69,7 @@ const seed = async () => {
   await Bus.create([
     {
       busNumber: 'NB-4521',
+      route: 'Route 177',
       from: 'Malabe',
       to: 'Colombo',
       capacity: 50,
@@ -80,6 +81,7 @@ const seed = async () => {
     },
     {
       busNumber: 'NB-7788',
+      route: 'Route 143',
       from: 'Kaduwela',
       to: 'Fort',
       capacity: 45,
@@ -91,6 +93,7 @@ const seed = async () => {
     },
     {
       busNumber: 'NB-1123',
+      route: 'Route 01',
       from: 'Kandy',
       to: 'Colombo',
       capacity: 55,
