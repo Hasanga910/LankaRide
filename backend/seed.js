@@ -15,14 +15,14 @@ const seed = async () => {
 
   await User.create({
     name: 'System Admin',
-    email: 'admin@busbuddy.lk',
+    email: 'admin@lankaride.lk',
     password: 'Admin@123',
     role: 'admin',
   });
 
   const driver1 = await User.create({
     name: 'Nimal Perera',
-    email: 'driver1@busbuddy.lk',
+    email: 'driver1@lankaride.lk',
     password: 'Driver@123',
     role: 'driver',
     nic: '901234567V',
@@ -32,7 +32,7 @@ const seed = async () => {
 
   const driver2 = await User.create({
     name: 'Sunil Fernando',
-    email: 'driver2@busbuddy.lk',
+    email: 'driver2@lankaride.lk',
     password: 'Driver@123',
     role: 'driver',
     nic: '881234567V',
@@ -42,7 +42,7 @@ const seed = async () => {
 
   const conductor1 = await User.create({
     name: 'Kamal Silva',
-    email: 'conductor1@busbuddy.lk',
+    email: 'conductor1@lankaride.lk',
     password: 'Conductor@123',
     role: 'conductor',
     nic: '921234567V',
@@ -51,7 +51,7 @@ const seed = async () => {
 
   const conductor2 = await User.create({
     name: 'Ruwan Jayasuriya',
-    email: 'conductor2@busbuddy.lk',
+    email: 'conductor2@lankaride.lk',
     password: 'Conductor@123',
     role: 'conductor',
     nic: '931234567V',
@@ -60,7 +60,7 @@ const seed = async () => {
 
   await User.create({
     name: 'Sample Passenger',
-    email: 'passenger@busbuddy.lk',
+    email: 'passenger@lankaride.lk',
     password: 'Passenger@123',
     role: 'passenger',
     contact: '0701112233',
@@ -122,10 +122,10 @@ const seed = async () => {
 
 
   console.log('\nSeed data created. Sample logins:');
-  console.log('  Admin:      admin@busbuddy.lk      / Admin@123');
-  console.log('  Driver:     driver1@busbuddy.lk     / Driver@123');
-  console.log('  Conductor:  conductor1@busbuddy.lk  / Conductor@123');
-  console.log('  Passenger:  passenger@busbuddy.lk   / Passenger@123\n');
+  console.log('  Admin:      admin@lankaride.lk       / Admin@123');
+  console.log('  Driver:     driver1@lankaride.lk      / Driver@123');
+  console.log('  Conductor:  conductor1@lankaride.lk   / Conductor@123');
+  console.log('  Passenger:  passenger@lankaride.lk    / Passenger@123\n');
 
   await mongoose.disconnect();
   process.exit();
