@@ -62,7 +62,9 @@ const HomePage = () => {
               live seat counts and trip status before you even reach the stop.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button to="/search" variant="primary" size="md">Search Buses</Button>
+              {user && (
+                <Button to="/search" variant="primary" size="md">Search Buses</Button>
+              )}
               {!user && (
                 <Button to="/login" variant="outline-white" size="md">Login</Button>
               )}
