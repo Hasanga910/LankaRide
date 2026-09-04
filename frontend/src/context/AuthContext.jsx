@@ -27,8 +27,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const updateUser = (updatedUser) => {
-    localStorage.setItem('bb_user', JSON.stringify(updatedUser));
-    setUser(updatedUser);
+    const userObj = {
+      id: updatedUser._id || updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+    };
+    localStorage.setItem('bb_user', JSON.stringify(userObj));
+    setUser(userObj);
   };
 
   return (

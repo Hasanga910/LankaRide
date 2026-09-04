@@ -59,11 +59,6 @@ export const updateSeats = async (req, res) => {
 export const searchBuses = async (req, res) => {
   try {
     const { from, to } = req.query;
-    if (req.user?.role === 'passenger') {
-      if (!from || !from.trim() || !to || !to.trim()) {
-        return res.status(400).json({ message: 'Please enter both starting location and destination.' });
-      }
-    }
     const buses = await busService.searchBuses(from, to);
     res.status(200).json(buses);
   } catch (err) {
